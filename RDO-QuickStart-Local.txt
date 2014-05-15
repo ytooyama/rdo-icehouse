@@ -3,8 +3,7 @@ RDO Neutron Quickstart Plus
 単体構成編
 ++++++++++++++++++++++++++++++++
 
-最終更新日: 2014/5/2
-
+最終更新日: 2014/5/15
 
 ■この文書について
 この文書はとりあえず1台に全部入りのOpenStack Icehouse環境をさくっと構築する場合の手順を説明しています。
@@ -36,13 +35,28 @@ Network:
 訳注:
 本書では次のネットワーク構成を利用します。
 
-Public Network
-192.168.1.0/24
-OpenStack Host
-192.168.1.10/24
 Private Network
 192.168.0.0/24
+Public Network
+192.168.1.0/24
 
+OpenStack Host
+eth0: 192.168.0.10/24 
+eth1: 192.168.1.10/24
+				       
+Outline:               　　　   
+---------+---------------+----------- Flating
+public	 |		 |             
+	 |		[X]qrouter     
+	 |		 |             
+---------|----+----------+----------- Fixed
+internal |    |                   
+	 |    |	
+    eth1 |    |eth0
+       +-+----+----+
+       | OpenStack |
+       |   Host    |
+       +-----------+
 
 Other:
 ・OpenStackノードに以下のように設定
@@ -62,12 +76,6 @@ net.ipv4.conf.all.forwarding = 1    #追記
 # sysctl -e -p /etc/sysctl.conf
 （設定を反映）
 --<
-
-【参考】
-・公式ガイド Compute
-http://docs.openstack.org/admin-guide-cloud/content/ch_introduction-to-openstack-compute.html#section_network-troubleshoot
-
-※仮想化上で実行する場合は、CPUの設定で「仮想化支援機能」を有効にしてください。
 
 
 Step 1: SELinuxの設定変更
@@ -134,20 +142,29 @@ Step 5:アンサーファイルを自分の環境に合わせて設定
 ・NICを利用したいものに変更する
 CONFIG_NOVA_COMPUTE_PRIVIF=lo
 CONFIG_NOVA_NETWORK_PRIVIF=lo
-CONFIG_NOVA_NETWORK_PUBIF=eth0
+CONFIG_NOVA_NETWORK_PUBIF=eth1
 
 NICが複数ある場合は次のように指定しても良い｡
-（例）eth0がゲートウェイに接続されている場合
+（例）eth1がゲートウェイに接続されている場合
 
-CONFIG_NOVA_COMPUTE_PRIVIF=eth1
-CONFIG_NOVA_NETWORK_PRIVIF=eth1
-CONFIG_NOVA_NETWORK_PUBIF=eth0
+CONFIG_NOVA_COMPUTE_PRIVIF=eth0
+CONFIG_NOVA_NETWORK_PRIVIF=eth0
+CONFIG_NOVA_NETWORK_PUBIF=eth1
 
 ・Dashboardにアクセスするパスワード
 CONFIG_KEYSTONE_ADMIN_PW=admin
 
 ・テスト用demoユーザーとかネットワークを作らないようにする
 CONFIG_PROVISION_DEMO=n
+
+・IPアドレスを内向きのネットワークに変更する
+192.168.1.10 -> 192.168.0.10
+
+viで一括文字列置換えを行う場合
+:%s/192.168.1.10/192.168.0.10/gc
+
+replace with 192.168.0.10 (y/n/a/q/l/^E/^Y)?
+（上書き問い合わせに対して、yと入力していく）
 
 
 Step 6: Packstackを実行してOpenStackのインストール
@@ -168,14 +185,14 @@ http://openstack.redhat.com/Neutron_with_existing_external_network
 ◆public用として使うNICの設定ファイルを修正
 packstack実行後、eth0をbr-exにつなぐように設定をします(※BOOTPROTOは設定しない)
 
-eth0からIPアドレス、サブネットマスク、ゲートウェイの設定を削除して次の項目だけを記述し、br-exの方に設定を書き込みます｡
+eth1からIPアドレス、サブネットマスク、ゲートウェイの設定を削除して次の項目だけを記述し、br-exの方に設定を書き込みます｡
 
 >--
-# vi /etc/sysconfig/network-scripts/ifcfg-eth0
+# vi /etc/sysconfig/network-scripts/ifcfg-eth1
 
-DEVICE=eth0
+DEVICE=eth1
 ONBOOT=yes
-HWADDR=52:54:00:92:05:AE # your eth0's hwaddr
+HWADDR=52:54:00:92:05:AE # your eth1's hwaddr
 TYPE=OVSPort
 DEVICETYPE=ovs
 OVS_BRIDGE=br-ex
