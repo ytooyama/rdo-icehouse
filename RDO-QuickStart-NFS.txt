@@ -3,7 +3,7 @@ RDO Neutron Quickstart Plus
 単体構成編
 ++++++++++++++++++++++++++++++++
 
-最終更新日: 2014/5/15
+最終更新日: 2014/5/16
 
 ■この文書について
 この文書はとりあえず1台に全部入りのOpenStack Icehouse環境をさくっと構築する場合の手順を説明しています。
@@ -156,6 +156,15 @@ CONFIG_KEYSTONE_ADMIN_PW=admin
 
 ・テスト用demoユーザーとかネットワークを作らないようにする
 CONFIG_PROVISION_DEMO=n
+
+・アンサーファイルのIPアドレス部分を内向きのネットワークIPアドレスに変更（複数個所）
+192.168.1.10 -> 192.168.0.10
+
+viで一括文字列置換えを行う場合
+:%s/192.168.1.10/192.168.0.10/gc
+
+replace with 192.168.0.10 (y/n/a/q/l/^E/^Y)?
+（上書き問い合わせに対して、yと入力していく）
 
 ・Cinder VolumeのバックエンドとしてNFSを利用する
 # The Cinder backend to use, valid options are: lvm, gluster, nfs,
