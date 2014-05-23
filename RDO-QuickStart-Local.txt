@@ -190,7 +190,7 @@ http://openstack.redhat.com/Neutron_with_existing_external_network
 
 
 ◆public用として使うNICの設定ファイルを修正
-packstack実行後、eth0をbr-exにつなぐように設定をします(※BOOTPROTOは設定しない)
+packstack実行後、eth1をbr-exにつなぐように設定をします(※BOOTPROTOは設定しない)
 
 eth1からIPアドレス、サブネットマスク、ゲートウェイの設定を削除して次の項目だけを記述し、br-exの方に設定を書き込みます｡
 
@@ -238,7 +238,7 @@ bridge_mappings = physnet1:br-ex
 
 Step 8: ネットワークの追加
 
-br-exにeth0を割り当てて仮想マシンをハイパーバイザー外部と通信できるようにする為の経路が確保されていることを確認します。
+br-exにeth1を割り当てて仮想マシンをハイパーバイザー外部と通信できるようにする為の経路が確保されていることを確認します。
 
 >--
 # ovs-vsctl show
