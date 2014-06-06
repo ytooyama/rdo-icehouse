@@ -1,0 +1,437 @@
+
+RDO Neutron Quickstart
+Fedora 20 単体構成編
+++++++++++++++++++++++++++++++++
+
+Status    : beta
+最終更新日: 2014/6/6
+
+
+■この文書について
+この文書はFedora20を使ったRDO OpenStack環境構築の補足資料です。
+
+eth0をExternal Network、eth1をInternal Network側に接続して、
+eth0をbr-exの元ポートとする構成を想定しています｡
+
+全体の流れについては以下もご覧ください。
+http://openstack.redhat.com/Fedora_20_with_existing_network
+
+
+Fedora-Step 0: 必要に応じてパッケージのインストール
+
+>--
+# yum install -y vim traceroute net-tools bash-completion
+--<
+
+
+Fedora-Step 1: コントローラノードのネットワーク設定
+
+次にコントローラノードのネットワーク設定を行います。
+
+◆まず実施すること
+
+・システムを最新にします。
+
+>--
+# yum -y update
+# reboot
+--<
+
+・カーネルの設定を調整します｡
+
+>--
+# vi /etc/sysctl.conf
+
+net.ipv4.ip_forward = 1              #変更
+net.ipv4.conf.default.rp_filter = 0  #変更
+
+net.bridge.bridge-nf-call-iptables = 0
+net.bridge.bridge-nf-call-arptables = 0
+
+net.ipv4.conf.all.rp_filter = 0     #追記
+net.ipv4.conf.all.forwarding = 1    #追記
+
+# sysctl -e -p /etc/sysctl.conf
+（設定を反映）
+--<
+
+・ホスト名を設定します｡
+
+>--
+# vi /etc/hostname
+icehousectl.localdomain
+--<
+
+
+◆NICをem X(or ens XX) からeth X形式にする
+NICがem X(or ens XX) 形式になっている場合にeth X形式にするには、"net.ifnames=0" and "biosdevame=0"をカーネルパラメーターに追加します｡複数のノードでOpenStack環境を構成するには設定を統一する必要があります｡
+
+Fedoraの場合は次のように対応します｡
+
+【参考】
+http://unix.stackexchange.com/questions/81834/how-can-i-change-the-default-ens33-network-device-to-old-eth0-on-fedora-19
+
+・カーネルパラメーターを追加
+-GRUB_CMDLINE_LINUX行に追記
+
+>--
+# vi /etc/default/grub
+
+
+GRUB_CMDLINE_LINUX="rd.lvm.lv=fedora/swap vconsole.font=latarcyrheb-sun16 rd.lvm.lv=fedora/root $([ -x /usr/sbin/rhcrashkernel-param ] && /usr/sbin/rhcrashkernel-param || :) rhgb quiet net.ifnames=0 biosdevname=0"
+GRUB_DISABLE_RECOVERY="true"
+
+# grub2-mkconfig -o /boot/grub2/grub.cfg
+--<
+
+・コマンドを実行してパラメーターが追加されていることを確認
+>--
+# cat /boot/grub2/grub.cfg|grep "net.ifnames=0 biosdevname=0"
+	linux	/vmlinuz-3.14.4-200.fc20.x86_64 root=/dev/mapper/fedora-root ro rd.lvm.lv=fedora/swap vconsole.font=latarcyrheb-sun16 rd.lvm.lv=fedora/root  rhgb quiet net.ifnames=0 biosdevname=0 
+	linux	/vmlinuz-0-rescue-dd809dffa81d4ee3be9471c38bdc4cf6 root=/dev/mapper/fedora-root ro rd.lvm.lv=fedora/swap vconsole.font=latarcyrheb-sun16 rd.lvm.lv=fedora/root  rhgb quiet net.ifnames=0 biosdevname=0 
+--<
+
+・一旦再起動します
+>--
+# reboot
+--<
+
+・NetworkデバイスがethX形式に変わったことを確認
+>--
+# ip addr show eth0
+--<
+
+・system-config-network-tuiでIPアドレスを設定
+-Name,DeviceをethX形式に変更
+-IPアドレスなどを設定
+-systemctl restart NetworkManager
+-IPアドレスの変更が反映されていることを確認
+
+
+Fedora-Step 2: IPアドレスを設定
+
+system-config-network-tuiコマンドなどでIPアドレスを設定します。
+例では次のように設定しました。
+
+eth0:
+192.168.1.10/255.255.255.0 GW:192.168.1.1  DNS1:8.8.8.8 
+eth1:
+192.168.0.10/255.255.255.0
+
+Fedora-Step 3: リポジトリーの追加とシステム設定
+
+・リポジトリーを追加してアップデートを実行します。
+>--
+# yum install -y http://rdo.fedorapeople.org/openstack-icehouse/rdo-release-icehouse.rpm
+# yum -y update
+--<
+
+・NetworkManagerの切り替え
+>--
+# systemctl disable NetworkManager
+# systemctl enable network
+--<
+
+・firewalldの無効化
+
+※バグの修正により、firewalldを使って構築できる可能性があります｡
+https://bugzilla.redhat.com/show_bug.cgi?id=1099840
+
+>--
+# systemctl disable firewalld
+# systemctl stop firewalld
+
+# yum install iptables-services
+
+# touch /etc/sysconfig/iptables
+# touch /etc/sysconfig/ip6tables
+# systemctl start iptables
+# systemctl start ip6tables
+# systemctl enable iptables
+# systemctl enable ip6tables
+--<
+
+・SELinuxをpermissiveモードに切り替えます｡
+packstackコマンドを実施する場合に設定を行ってください｡
+>--
+# sed -i -e s/^SELINUX=.*/SELINUX=permissive/ /etc/selinux/config
+（SELINUX=permissiveに設定）
+
+# reboot
+--<
+
+
+Fedora-Step 4: Packstackを実行してOpenStackのインストール
+
+・packstackインストーラをインストールします｡
+>--
+# yum install -y openstack-packstack
+--<
+
+・とりあえず動かしてみたい場合はallinoneで実行します｡
+この構成はデフォルトネットワークが構成されるので、外部からのアクセスはできません。
+>--
+# packstack --allinone
+Welcome to Installer setup utility
+Packstack changed given value  to required value /root/.ssh/id_rsa.pub
+
+Installing:
+Clean Up                                             [ DONE ]
+root@192.168.1.10's password: xxxx
+
+（略）
+
+ **** Installation completed successfully ******
+
+Additional information:
+ * File /root/keystonerc_admin has been created on OpenStack client host 192.168.1.10. To use the command line tools you need to source the file.
+ * To access the OpenStack Dashboard browse to http://192.168.1.10/dashboard .
+Please, find your login credentials stored in the keystonerc_admin in your home directory.
+ * To use Nagios, browse to http://192.168.1.10/nagios username : nagiosadmin, password : ca2ba65dc3f8404f
+ * The installation log file is available at: /var/tmp/packstack/20140516-113938-CqooZn/openstack-setup.log
+ * The generated manifests are available at: /var/tmp/packstack/20140516-113938-CqooZn/manifests
+--<
+
+allinoneインストールをした場合は以上です｡
+ログインに使うパスワードはkeystone_adminやkeystone_demoに書かれています｡
+
+Horizonにアクセスして、OpenStackの動作を確認します｡
+
+
+
+◆カスタマイズインストール
+
+・単体構成以上のものを作る場合や、ネットワーク周りの設定、導入するコンポーネントなどを定義するには、
+アンサーファイルを生成してインストール時に利用します｡
+>--
+# packstack --gen-answer-file=answer.txt
+(answer.txtという名前のファイルを作成する場合)
+--<
+
+・「Step 5:アンサーファイルを自分の環境に合わせて設定」を参考に、アンサーファイルを編集します｡
+- https://github.com/ytooyama/rdo-icehouse/blob/master/RDO-QuickStart-Local.txt
+- https://github.com/ytooyama/rdo-icehouse/blob/master/RDO-QuickStart-NFS.txt
+
+複数台構成にするには色々方法がありますが、GREを用いた設定をするのが一番簡単です。
+「Step 10: アンサーファイルの編集のgreの設定」を設定しpackstackコマンドを実行し、
+「neutron/plugin.ini」にgreの設定が行われていることを確認してください｡
+
+https://github.com/ytooyama/rdo-havana/blob/master/RDO-QuickStart-4.txt
+
+・設定を書き換えたアンサーファイルを使ってOpenStackを導入するには、
+コントローラノード上で次のようにアンサーファイルを指定してpackstackコマンドを実行します。
+>--
+# packstack --answer-file=answer.txt
+Welcome to Installer setup utility
+Packstack changed given value  to required value /root/.ssh/id_rsa.pub
+
+Installing:
+Clean Up                                             [ DONE ]
+root@192.168.1.10's password: xxxx
+
+（略）
+
+ **** Installation completed successfully ******
+
+Additional information:
+ * File /root/keystonerc_admin has been created on OpenStack client host 192.168.0.10. To use the command line tools you need to source the file.
+ * To access the OpenStack Dashboard browse to http://192.168.0.10/dashboard .
+Please, find your login credentials stored in the keystonerc_admin in your home directory.
+ * The installation log file is available at: /var/tmp/packstack/20140516-113938-CqooZn/openstack-setup.log
+ * The generated manifests are available at: /var/tmp/packstack/20140516-113938-CqooZn/manifests
+--<
+
+
+Fedora-Step 5: ネットワーク設定の変更
+
+次に外部と通信できるようにするための設定を行います。
+http://openstack.redhat.com/Neutron_with_existing_external_network
+
+
+◆public用として使うNICの設定ファイルを修正
+packstack実行後、eth1をbr-exにつなぐように設定をします(※BOOTPROTOは設定しない)。
+
+eth0の設定ファイルからIPアドレス、サブネットマスク、ゲートウェイの設定を削除して
+次の項目だけを記述し、br-exの方に設定を書き込みます｡
+
+>--
+# vi /etc/sysconfig/network-scripts/ifcfg-eth0
+
+DEVICE=eth0
+HWADDR=xx:xx:xx:xx:xx:xx # your eth0's hwaddr
+ONBOOT=yes
+TYPE=OVSPort
+DEVICETYPE=ovs
+OVS_BRIDGE=br-ex
+NM_CONTROLLED=no
+--<
+
+
+◆ブリッジインターフェイスの作成
+ブリッジインターフェイスのを作成し設定します｡
+
+・br-exにeth0のIPアドレスを設定
+>--
+# vi /etc/sysconfig/network-scripts/ifcfg-br-ex
+
+DEVICE=br-ex
+DEVICETYPE=ovs
+TYPE=OVSBridge
+OVSBOOTPROTO=none
+IPADDR=192.168.1.10
+NETMASK=255.255.255.0
+GATEWAY=192.168.1.1
+OVSDHCPINTERFACES=eth0
+NM_CONTROLLED=no
+ONBOOT=yes
+DNS1=8.8.8.8
+DNS1=8.8.4.4
+--<
+
+・Neutron Pluginの設定を追加
+>--
+# vi /etc/neutron/plugin.ini
+
+[OVS]
+vxlan_udp_port=4789
+tenant_network_type=local
+enable_tunneling=False
+integration_bridge=br-int
+
+network_vlan_ranges = physnet1	  ←追加
+bridge_mappings = physnet1:br-ex  ←追加
+--<
+
+・一旦再起動
+>--
+# reboot
+# systemctl restart network (br-exがupしない問題対応)
+# ip route
+（ルーティングテーブルを確認）
+# ip route del 169.254.0.0/16
+（ip routeで169.254.0.0/16のエントリ数だけ実行）
+--<
+
+・ブリッジの確認
+>--
+# ovs-vsctl list-br
+br-ex
+br-int
+--<
+
+※複数台構成では「br-tun」が出力結果に含まれます｡
+
+
+・br-exポートの確認
+>--
+# ovs-vsctl list-ports br-ex
+eth0
+phy-br-ex
+--<
+
+
+◆Hypervisorの設定変更
+デフォルト構成ではKVMが設定されますが、環境によってHypervisorの設定変更が必要です｡
+例えばCPUによる仮想化支援機能が利用できない場合はqemuを設定します｡
+
+ただしqemuではCirrosは実行できるものの、多くの汎用OSは実行できない点に注意してください｡
+設定変更するには次の手順を参考に設定します｡
+
+【参考】
+http://docs.openstack.org/trunk/config-reference/content/section_compute-hypervisors.html
+
+◆ネットワークやユーザーの追加
+この後、「Step 8: ネットワークの追加」以降の手順を実施します。
+https://github.com/ytooyama/rdo-icehouse/blob/master/RDO-QuickStart-Local.txt
+
+◆ファイアウォールの設定変更
+Fedoraの場合、ファイアウォールのポート開放周りがうまく動かない場合があります。
+
+※バグの修正により、この問題は解決している可能性があります｡
+https://bugzilla.redhat.com/show_bug.cgi?id=1099840
+
+
+以下のポートをsystem-config-firewall-tuiコマンド等で手動設定します｡
+
+・80/tcp    #apache
+・6080/tcp  #novnc
+・6081/tcp  #xvpvnc		
+・9696/tcp  #neutron
+・8774/tcp  #nova-compute
+・8773/tcp  #nova-compute-ec2
+・3260/tcp  #cinder
+・8776/tcp  #cinder
+・9292/tcp  #glance
+・9191/tcp  #glance-imageregist
+・5000/tcp  #keystone
+・35357/tcp #keystone
+・3306/tcp  #mysql
+・4789/udp  #ovs-vx-lan
+
+構成に必要なポートを開放します。
+
+http://openstack.redhat.com/forum/discussion/805/havana-api-ports-blocked-by-default/p1
+http://jedipunkz.github.io/blog/2014/04/25/stackforge-openstack-chef-repo-icehouse-deploy/
+
+Firewalldの場合はfirewall-cmdコマンドを利用してポート開放できます｡
+
+>--
+# firewall-cmd --add-service=http
+（80ポートを開放）
+# firewall-cmd --permanent --add-service=http
+（常に80ポートを開放）
+
+# firewall-cmd --add-port=80/tcp
+# firewall-cmd --permanent --add-port=80/tcp
+（ポートを指定する方法）
+
+# iptables -nvL | grep 80
+    5   300 ACCEPT     tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            tcp dpt:80 ctstate NEW
+（ポート開放の確認例）
+--<
+
+
+◆ブラウザによる操作
+ホストPCからブラウザでHorizonにアクセスし、操作してみましょう｡
+
+◆SSH接続してみよう
+ホストPCからインスタンスにSSH接続してみましょう｡
+
+
+■FAQ
+
+・br-exがネットワークにつながらない
+
+以下の末尾に「that after rebooting, the network will be messed up
+# to get connectivity restored.」とある。再起動するとupしない模様。
+http://openstack.redhat.com/Fedora_20_with_existing_network
+
+とりあえず、以下のようにコマンドを実行して回避
+
+>--
+# systemctl restart network
+# ip route
+（ルーティングテーブルを確認）
+# ip route del 169.254.0.0/16
+（ip routeで169.254.0.0/16のエントリ数だけ実行）
+# ping 8.8.8.8 -I br-ex
+--<
+
+・packstackを実行すると、「Packstack changed given value  to required」という出力がでて
+処理がなかなか進まない
+
+設定にまちがいがあるため。しばらく待つと、主にどこら辺が間違っているか教えてくれる。
+例はCONFIG_NOVA_COMPUTE_HOSTSを間違えた場合｡
+
+>--
+# packstack --answer-file=answer.txt
+Welcome to Installer setup utility
+Packstack changed given value  to required value /root/.ssh/id_rsa.pub
+Packstack changed given value 192.168.0.9:/nfs to required value '192.168.0.9:/nfs'
+
+Parameter CONFIG_NOVA_COMPUTE_HOSTS failed validation: Given host does not listen on port 22: 172.168.0.8
+
+ERROR : Failed handling answer file: Given host does not listen on port 22: 172.168.0.8
+--<
+
+設定を修正して再度packstackを実行する。
