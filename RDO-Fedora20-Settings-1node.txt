@@ -72,7 +72,7 @@ Fedoraの場合は次のように対応します｡
 http://unix.stackexchange.com/questions/81834/how-can-i-change-the-default-ens33-network-device-to-old-eth0-on-fedora-19
 
 ・カーネルパラメーターを追加
--GRUB_CMDLINE_LINUX行に追記
+-GRUB_CMDLINE_LINUX行に「net.ifnames=0 biosdevname=0」の2項目を追記
 
 >--
 # vi /etc/default/grub
