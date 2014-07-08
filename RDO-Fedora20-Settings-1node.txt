@@ -3,8 +3,8 @@ RDO Neutron Quickstart
 Fedora 20 単体構成編
 ++++++++++++++++++++++++++++++++
 
-Status    : beta
-最終更新日: 2014/6/6
+Status    : beta2
+最終更新日: 2014/7/9
 
 
 ■この文書について
@@ -288,20 +288,11 @@ DNS1=8.8.8.8
 DNS1=8.8.4.4
 --<
 
-・Neutron Pluginの設定を追加
+・/etc/neutron/plugin.iniに次の設定を追加
 >--
-# vi /etc/neutron/plugin.ini
-
-[OVS]
-vxlan_udp_port=4789
-tenant_network_type=local
-enable_tunneling=False
-integration_bridge=br-int
-
-network_vlan_ranges = physnet1	  ←追加
-bridge_mappings = physnet1:br-ex  ←追加
+network_vlan_ranges = physnet1
+bridge_mappings = physnet1:br-ex
 --<
-
 ・一旦再起動
 >--
 # reboot

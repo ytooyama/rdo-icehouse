@@ -3,7 +3,7 @@ RDO Neutron Quickstart Plus
 単体構成編
 ++++++++++++++++++++++++++++++++
 
-最終更新日: 2014/5/23
+最終更新日: 2014/7/9
 
 ■この文書について
 この文書はとりあえず1台に全部入りのOpenStack Icehouse環境をさくっと構築する場合の手順を説明しています。
@@ -465,8 +465,8 @@ kvm                   332980  1 kvm_amd
 
 # vi /etc/nova/nova.conf
 （略）
-libvirt_type=kvm
-#libvirt_type=qemu
+virt_type=kvm
+#virt_type=qemu
 （設定を変更）
 --<
 
