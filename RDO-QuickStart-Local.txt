@@ -466,15 +466,10 @@ kvm                   332980  1 kvm_amd
 
 # vi /etc/nova/nova.conf
 （略）
-<<<<<<< HEAD
 scheduler_default_filters=AllHostsFilter
 （略）
-libvirt_type=kvm
-#libvirt_type=qemu
-=======
 virt_type=kvm
 #virt_type=qemu
->>>>>>> FETCH_HEAD
 （設定を変更）
 
 # service openstack-nova-scheduler restart
