@@ -3,7 +3,7 @@ RDO Neutron Quickstart Plus
 単体構成編
 ++++++++++++++++++++++++++++++++
 
-最終更新日: 2014/5/23
+最終更新日: 2014/7/9
 
 ■この文書について
 この文書はとりあえず1台に全部入りのOpenStack Icehouse環境をさくっと構築する場合の手順を説明しています。
@@ -464,6 +464,7 @@ Step 10: Novaの設定変更
 デフォルト設定のままインストールした場合、Novaは仮想化基盤にqemuを利用するようになっています。パフォーマンスを上げるには以下のように設定を変更します。
 
 KVMモジュールが読み込まれていることを確認します。
+またスケジューラーの設定も行っておきます。
 >--
 # lsmod | grep kvm
 kvm_intel              54285  6 
@@ -474,9 +475,14 @@ kvm                   332980  1 kvm_amd
 
 # vi /etc/nova/nova.conf
 （略）
+scheduler_default_filters=AllHostsFilter
+（略）
 libvirt_type=kvm
 #libvirt_type=qemu
 （設定を変更）
+
+# service openstack-nova-scheduler restart
+# service openstack-nova-compute restart
 --<
 
 

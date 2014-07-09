@@ -3,8 +3,8 @@ RDO Neutron Quickstart
 Fedora 20 単体構成編
 ++++++++++++++++++++++++++++++++
 
-Status    : beta
-最終更新日: 2014/6/6
+Status    : beta2
+最終更新日: 2014/7/9
 
 
 ■この文書について
@@ -288,20 +288,11 @@ DNS1=8.8.8.8
 DNS1=8.8.4.4
 --<
 
-・Neutron Pluginの設定を追加
+・/etc/neutron/plugin.iniに次の設定を追加
 >--
-# vi /etc/neutron/plugin.ini
-
-[OVS]
-vxlan_udp_port=4789
-tenant_network_type=local
-enable_tunneling=False
-integration_bridge=br-int
-
-network_vlan_ranges = physnet1	  ←追加
-bridge_mappings = physnet1:br-ex  ←追加
+network_vlan_ranges = physnet1
+bridge_mappings = physnet1:br-ex
 --<
-
 ・一旦再起動
 >--
 # reboot
@@ -335,7 +326,29 @@ phy-br-ex
 例えばCPUによる仮想化支援機能が利用できない場合はqemuを設定します｡
 
 ただしqemuではCirrosは実行できるものの、多くの汎用OSは実行できない点に注意してください｡
-設定変更するには次の手順を参考に設定します｡
+
+最低限、次の設定を確認してください。
+>--
+# lsmod | grep kvm
+kvm_intel              54285  6 
+kvm                   332980  1 kvm_intel
+(Intel CPUの場合)
+kvm                   332980  1 kvm_amd
+(AMD CPUの場合)
+
+# vi /etc/nova/nova.conf
+（略）
+scheduler_default_filters=AllHostsFilter
+（略）
+libvirt_type=kvm
+#libvirt_type=qemu
+（設定を変更）
+
+# service openstack-nova-scheduler restart
+# service openstack-nova-compute restart
+--<
+
+詳細は次の手順を参考に設定します｡
 
 【参考】
 http://docs.openstack.org/trunk/config-reference/content/section_compute-hypervisors.html
