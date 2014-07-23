@@ -62,7 +62,7 @@ demoユーザーを作成してみます。パスワードはdemoにします。
 ユーザー作成コマンドはkeystone user-createです。
 パラメータはいくつかあるので--helpで確認。--nameがユーザー名、--passがパスワード、--tenantはテナント(Horizonではプロジェクト)名、--enabledは有効化の可否を指定します｡
 
-tenantはHorizonで登録されている「プロジェクト」を確認するか、コマンドでは次のコマンドで確認できます。
+tenantはHorizonで登録されている「プロジェクト」を確認するか、コマンドではkerstone tenant-listで確認できます。
 
 作成したdemoユーザーにMember権限を割り当てるには次のように行います。
 
