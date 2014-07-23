@@ -39,6 +39,13 @@ eth0            | eth1
 --------------  | --------------
 192.168.0.10/24 | 192.168.1.10/24
 
+- NFSサーバー
+
+eth0            | eth1           | マウントポイント
+--------------  | -------------- |---------------
+192.168.0.9/24  | 192.168.1.9/24 | /nfs
+
+
 - カーネルパラメータの設定
 以下のように設定を変更します。
 
@@ -154,12 +161,8 @@ CONFIG_KEYSTONE_ADMIN_PW=admin
 CONFIG_PROVISION_DEMO=n
 
 - Cinder VolumeのバックエンドとしてNFSを利用する設定を追記する
-# The Cinder backend to use, valid options are: lvm, gluster, nfs,
-# vmdk
-CONFIG_CINDER_BACKEND=nfs
 
-# A single or comma seprated list of NFS exports to mount, eg: ip-
-# address:/export-name
+CONFIG_CINDER_BACKEND=nfs
 CONFIG_CINDER_NFS_MOUNTS=192.168.1.9:/nfs
 
 
