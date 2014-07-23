@@ -3,8 +3,8 @@ RDO Neutron Quickstart
 Fedora 20 単体構成編
 ++++++++++++++++++++++++++++++++
 
-Status    : beta2
-最終更新日: 2014/7/9
+Status    : beta3
+最終更新日: 2014/7/23
 
 
 ■この文書について
@@ -126,31 +126,6 @@ Fedora-Step 3: リポジトリーの追加とシステム設定
 # yum -y update
 --<
 
-・NetworkManagerの切り替え
->--
-# systemctl disable NetworkManager
-# systemctl enable network
---<
-
-・firewalldの無効化
-
-※バグの修正により、firewalldを使って構築できる可能性があります｡
-https://bugzilla.redhat.com/show_bug.cgi?id=1099840
-
->--
-# systemctl disable firewalld
-# systemctl stop firewalld
-
-# yum install iptables-services
-
-# touch /etc/sysconfig/iptables
-# touch /etc/sysconfig/ip6tables
-# systemctl start iptables
-# systemctl start ip6tables
-# systemctl enable iptables
-# systemctl enable ip6tables
---<
-
 ・SELinuxをpermissiveモードに切り替えます｡
 packstackコマンドを実施する場合に設定を行ってください｡
 >--
@@ -247,6 +222,15 @@ Fedora-Step 5: ネットワーク設定の変更
 次に外部と通信できるようにするための設定を行います。
 http://openstack.redhat.com/Neutron_with_existing_external_network
 
+◆NetworkManagerの切り替え
+
+>--
+# systemctl disable NetworkManager
+# systemctl enable network
+
+# systemctl stop NetworkManager
+# systemctl start network
+--<
 
 ◆public用として使うNICの設定ファイルを修正
 packstack実行後、eth1をbr-exにつなぐように設定をします(※BOOTPROTOは設定しない)。
