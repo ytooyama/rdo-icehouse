@@ -179,6 +179,14 @@ CONFIG_CINDER_NFS_MOUNTS=192.168.1.9:/nfs
 次に外部と通信できるようにするための設定を行います。
 http://openstack.redhat.com/Neutron_with_existing_external_network
 
+###◆public用として使うNICの設定を確認
+コマンドを実行して、アンサーファイルに設定したpublic用NICを確認します。
+以降の手順ではeth1であることを前提として解説します。
+
+````
+# less /root/{packstack-answers-*,answer.txt}|grep CONFIG_NOVA_NETWORK_PUBIF
+CONFIG_NOVA_NETWORK_PUBIF=eth1
+````
 
 ###◆public用として使うNICの設定ファイルを修正
 packstack実行後、eth1をbr-exにつなぐように設定をします(※BOOTPROTOは設定しない)
