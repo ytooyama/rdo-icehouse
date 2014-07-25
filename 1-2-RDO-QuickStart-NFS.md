@@ -21,8 +21,8 @@ Software:
 - Fedora 20
 
 Hardware:
-- CPU 2Core以上
-- メモリー4GB以上
+- CPU 3Core以上
+- メモリー6GB以上
 - 最低1つのNIC
 ※All-in-oneの構成を作る場合は、Privateネットワーク用はloインターフェイスを利用できます。
 

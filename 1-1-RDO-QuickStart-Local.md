@@ -1,6 +1,6 @@
 #RDO Neutron Quickstart Plus 単体構成編
 
-最終更新日: 2014/7/23
+最終更新日: 2014/7/25
 
 ##この文書について
 この文書はとりあえず1台に全部入りのOpenStack Icehouse環境をさくっと構築する場合の手順を説明しています。
@@ -21,8 +21,8 @@ Software:
 - Fedora 20
 
 Hardware:
-- CPU 2Core以上
-- メモリー4GB以上
+- CPU 3Core以上
+- メモリー6GB以上
 - 最低1つのNIC
 ※All-in-oneの構成を作る場合は、Privateネットワーク用はloインターフェイスを利用できます。
 
