@@ -190,6 +190,7 @@ HWADDR=xx:xx:xx:xx:xx:xx # Your eth1's hwaddr
 TYPE=OVSPort
 DEVICETYPE=ovs
 OVS_BRIDGE=br-ex
+NM_CONTROLLED=no
 ````
 
 ###◆ブリッジインターフェイスの作成
@@ -202,12 +203,13 @@ DEVICE=br-ex
 ONBOOT=yes
 DEVICETYPE=ovs
 TYPE=OVSBridge
-BOOTPROTO=static
+BOOTPROTO=none
 IPADDR=192.168.1.10
 NETMASK=255.255.255.0  # netmask
 GATEWAY=192.168.1.1    # gateway
 DNS1=8.8.8.8           # nameserver
 DNS2=8.8.4.4
+NM_CONTROLLED=no
 ````
 
 /etc/neutron/plugin.iniに次の設定を追加します。
