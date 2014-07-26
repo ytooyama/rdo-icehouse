@@ -212,12 +212,16 @@ DNS2=8.8.4.4
 NM_CONTROLLED=no
 ````
 
-/etc/neutron/plugin.iniに次の設定を追加します。
+###◆ML2プラグインの問題を対処
+
+インスタンスを起動すると"vif_type=binding_failed"とエラーになる問題を対処します。
 
 ````
-network_vlan_ranges = physnet1
-bridge_mappings = physnet1:br-ex
+# sed -i -e "s/# Example: mechanism drivers/# Example: mechanism_drivers/g" \
+/etc/neutron/plugins/ml2/ml2_conf.ini
 ````
+
+※コメントにしている箇所がエラーのトリガーになるML2コワス。
 
 ここまでできたらいったんホストを再起動します。
 
