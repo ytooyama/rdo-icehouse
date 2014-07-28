@@ -212,6 +212,34 @@ DNS2=8.8.4.4
 NM_CONTROLLED=no
 ````
 
+###◆プライベートインターフェイスの設定
+プライベートインターフェイスとしてanswer.txtに指定したNICの設定を変更します。loデバイスを指定した場合は特に設定変更する必要はありません。
+ただし、loデバイスを指定した場合はall-in-one構成のみしか構成できません。
+
+- answer.txtファイルの設定を確認します。
+
+````
+# less {packstack-answers-*,answer.txt}|grep CONFIG_NOVA_NETWORK_PRIVIF
+CONFIG_NOVA_NETWORK_PRIVIF=eth0
+# less {packstack-answers-*,answer.txt}|grep CONFIG_NOVA_COMPUTE_PRIVIF
+CONFIG_NOVA_COMPUTE_PRIVIF=eth0
+````
+
+- IP設定を行います。IPアドレスとサブネットマスクの設定を行います。
+
+````
+# vi /etc/sysconfig/network-scripts/ifcfg-eth0
+
+DEVICE=eth0
+HWADDR=xx:xx:xx:xx:xx:xx # Your eth0's hwaddr
+TYPE=Ethernet
+ONBOOT=yes
+BOOTPROTO=none
+IPADDR=192.168.170.100
+NETMASK=255.255.255.0
+NM_CONTROLLED=no
+````
+
 ###【Workaround】◆ML2プラグインの問題を対処
 
 インスタンスを起動すると"vif_type=binding_failed"とエラーになる問題を対処します。
