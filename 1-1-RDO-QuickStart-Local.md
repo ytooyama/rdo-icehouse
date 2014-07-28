@@ -31,7 +31,7 @@ Hardware:
 
 Private Network | Public Network
 --------------  | -------------
-192.168.0.0/24  | 192.168.1.0/24
+192.168.2.0/24  | 192.168.1.0/24
 
 - OpenStackホスト
 
@@ -235,7 +235,7 @@ HWADDR=xx:xx:xx:xx:xx:xx # Your eth0's hwaddr
 TYPE=Ethernet
 ONBOOT=yes
 BOOTPROTO=none
-IPADDR=192.168.170.100
+IPADDR=192.168.0.10
 NETMASK=255.255.255.0
 NM_CONTROLLED=no
 ````

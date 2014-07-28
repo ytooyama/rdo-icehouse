@@ -112,8 +112,8 @@ Created a new subnet:
 
 ````
 # neutron subnet-create --name demo-net_subnet --enable_dhcp=True \
---allocation-pool=start=192.168.0.100,end=192.168.0.254 --gateway=192.168.0.1 \
---dns-nameserver 8.8.8.8 demo-net 192.168.0.0/24
+--allocation-pool=start=192.168.2.100,end=192.168.2.254 --gateway=192.168.2.1 \
+--dns-nameserver 8.8.8.8 demo-net 192.168.2.0/24
 Created a new subnet:
 （略）
 ````
