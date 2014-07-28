@@ -172,7 +172,7 @@ http://openstack.redhat.com/Neutron_with_existing_external_network
 以降の手順ではeth1であることを前提として解説します。
 
 ````
-# less /root/{packstack-answers-*,answer.txt}|grep CONFIG_NOVA_NETWORK_PUBIF
+# less {packstack-answers-*,answer.txt}|grep CONFIG_NOVA_NETWORK_PUBIF
 CONFIG_NOVA_NETWORK_PUBIF=eth1
 ````
 
