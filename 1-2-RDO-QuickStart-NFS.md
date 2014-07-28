@@ -1,6 +1,6 @@
 #RDO Neutron Quickstart Plus 単体構成編
 
-最終更新日: 2014/7/23
+最終更新日: 2014/7/29
 
 ##この文書について
 この文書はとりあえず1台に全部入りのOpenStack Icehouse環境をさくっと構築する場合の手順を説明しています。
@@ -251,26 +251,6 @@ BOOTPROTO=none
 IPADDR=192.168.0.10
 NETMASK=255.255.255.0
 NM_CONTROLLED=no
-````
-
-###【Workaround】◆ML2プラグインの問題を対処
-
-インスタンスを起動すると"vif_type=binding_failed"とエラーになる問題を対処します。
-
-````
-# sed -i -e "s/# Example: mechanism drivers/# Example: mechanism_drivers/g" \
-/etc/neutron/plugins/ml2/ml2_conf.ini
-````
-
-※コメントにしている箇所がエラーのトリガーになるML2コワス。
-
-###【Workaround】◆Kernelの置き換え
-
-CentOS 6.5の標準のカーネルはvxlanサポートしていないようなので置き換える。
-インストール後、/etc/grub.confでそのカーネルが選択されるように設定。
-
-````
-# yum install https://repos.fedorapeople.org/repos/openstack/openstack-icehouse/epel-6/kernel-2.6.32-358.123.2.openstack.el6.x86_64.rpm
 ````
 
 ここまでできたらいったんホストを再起動します。
