@@ -194,7 +194,7 @@ NM_CONTROLLED=no
 ````
 
 ###◆ブリッジインターフェイスの作成
-br-exにeth0のIPアドレスを設定します。
+br-exにeth1のIPアドレスを設定します。
 
 ````
 # vi /etc/sysconfig/network-scripts/ifcfg-br-ex
