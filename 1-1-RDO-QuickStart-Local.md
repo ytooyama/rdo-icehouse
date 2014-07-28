@@ -212,7 +212,7 @@ DNS2=8.8.4.4
 NM_CONTROLLED=no
 ````
 
-###◆ML2プラグインの問題を対処
+###【Workaround】◆ML2プラグインの問題を対処
 
 インスタンスを起動すると"vif_type=binding_failed"とエラーになる問題を対処します。
 
@@ -222,6 +222,15 @@ NM_CONTROLLED=no
 ````
 
 ※コメントにしている箇所がエラーのトリガーになるML2コワス。
+
+###【Workaround】◆Kernelの置き換え
+
+CentOS 6.5の標準のカーネルはvxlanサポートしていないようなので置き換える。
+インストール後、/etc/grub.confでそのカーネルが選択されるように設定。
+
+````
+# yum install https://repos.fedorapeople.org/repos/openstack/openstack-icehouse/epel-6/kernel-2.6.32-358.123.2.openstack.el6.x86_64.rpm
+````
 
 ここまでできたらいったんホストを再起動します。
 
