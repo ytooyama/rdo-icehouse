@@ -153,6 +153,17 @@ CONFIG_KEYSTONE_ADMIN_PW=admin
 
 CONFIG_PROVISION_DEMO=n
 
+- 単体構成なので、ローカルモードで実行する設定を行う
+
+CONFIG_NEUTRON_ML2_TYPE_DRIVERS=local
+
+CONFIG_NEUTRON_ML2_TENANT_NETWORK_TYPES=local
+
+CONFIG_NEUTRON_LB_TENANT_NETWORK_TYPE=local
+
+CONFIG_NEUTRON_OVS_TENANT_NETWORK_TYPE=local
+
+
 ##Step 6: Packstackを実行してOpenStackのインストール
 
 設定を書き換えたアンサーファイルを使ってOpenStackを導入するには、次のようにアンサーファイルを指定して実行します。
