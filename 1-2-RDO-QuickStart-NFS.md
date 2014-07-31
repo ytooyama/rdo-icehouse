@@ -1,6 +1,6 @@
 #RDO Neutron Quickstart Plus 単体構成編
 
-最終更新日: 2014/7/29
+最終更新日: 2014/7/31
 
 ##この文書について
 この文書はとりあえず1台に全部入りのOpenStack Icehouse環境をさくっと構築する場合の手順を説明しています。
@@ -227,6 +227,7 @@ ONBOOT=yes
 DEVICETYPE=ovs
 TYPE=OVSBridge
 OVSBOOTPROTO=none
+OVSDHCPINTERFACES=eth0
 IPADDR=192.168.1.10
 NETMASK=255.255.255.0  # netmask
 GATEWAY=192.168.1.1    # gateway
