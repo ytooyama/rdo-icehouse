@@ -133,3 +133,56 @@ Added interface xxxx-xxxx-xxxx-xxxx-xxxx to router router1.
 ````
 
 routerはneutron router-listコマンドで確認、サブネットはneutron subnet-listコマンドで確認することができます。
+
+
+###◆仮想ルーターが作られたか確認
+neutronコマンドでネットワークを定義したことで仮想ルーター(qrouter)が作られていることを確認します。
+
+````
+# ip netns
+qrouter-97b749cb-83af-401b-9c99-12be68cb7528
+
+# ip netns exec qrouter-97b749cb-83af-401b-9c99-12be68cb7528 ifconfig
+lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10<host>
+        loop  txqueuelen 0  (Local Loopback)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 0  bytes 0 (0.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+qg-be319866-66: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 172.17.14.206  netmask 255.255.255.0  broadcast 172.17.14.255
+        inet6 fe80::f816:3eff:fe5a:1b40  prefixlen 64  scopeid 0x20<link>
+        ether fa:16:3e:5a:1b:40  txqueuelen 0  (Ethernet)
+        RX packets 1  bytes 60 (60.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 11  bytes 774 (774.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+qr-d92c65fb-95: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.3.1  netmask 255.255.255.0  broadcast 192.168.3.255
+        inet6 fe80::f816:3eff:fe68:1400  prefixlen 64  scopeid 0x20<link>
+        ether fa:16:3e:68:14:00  txqueuelen 0  (Ethernet)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 11  bytes 774 (774.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+# ip netns exec qrouter-97b749cb-83af-401b-9c99-12be68cb7528 ping -c 3 -I qg-be319866-66 8.8.8.8
+PING 8.8.8.8 (8.8.8.8) from 172.17.14.206 qg-be319866-66: 56(84) bytes of data.
+64 bytes from 8.8.8.8: icmp_seq=1 ttl=45 time=37.7 ms
+64 bytes from 8.8.8.8: icmp_seq=2 ttl=45 time=36.7 ms
+64 bytes from 8.8.8.8: icmp_seq=3 ttl=45 time=36.7 ms
+
+--- 8.8.8.8 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2002ms
+rtt min/avg/max/mdev = 36.729/37.079/37.739/0.492 ms
+
+# ip netns exec qrouter-97b749cb-83af-401b-9c99-12be68cb7528 ping -c 3 -I qr-d92c65fb-95 192.168.3.1
+...
+````
+
+pingコマンドが通れば、外部ネットワークと接続がうまくいっていると判断できます。
+nova bootコマンドなどでインスタンスを起動するとqdhcpが作られます。同様に確認してみてください。
