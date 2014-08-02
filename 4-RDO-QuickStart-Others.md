@@ -142,7 +142,9 @@ dstatコマンドなどで確認してみましょう。
 - インスタンスで外部ネットワークにアクセスしようとすると応答がなくなったり切断される
 
 RDO Packstack Icehouse版アンサーファイルのデフォルトはvxlanモードに設定されており、このままインストールするとMTU溢れの問題が発生します。
-以下が参考になります。
+その結果、インスタンスとのSSH接続が切断されたり、Pingの応答がされなくなるなどの問題が発生します。
+
+VXLANとMTUについては以下に少々記述があり、参考になります。
 <http://www.cisco.com/cisco/web/support/JP/docs/SW/DCSWT/Nex1000VSWT/CG/026/b_VXLAN_Configuration_4_2_1SV_2_1_1_chapter_010.html?bid=0900e4b182e40102>
 
 CirrOSなどパスワード認証できるイメージから起動して、インスタンスでファイルのコピーを実行してみてください。
