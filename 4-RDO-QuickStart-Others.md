@@ -1,6 +1,6 @@
 #RDO Neutron Quickstart Plus Novaの設定変更とインスタンスイメージの登録
 
-最終更新日: 2014/7/29
+最終更新日: 2014/8/2
 
 ##この文書について
 この文書はとりあえず1台に全部入りのOpenStack Icehouse環境をさくっと構築する場合の手順を説明しています。
@@ -114,7 +114,7 @@ Ubuntu
 
 ##Step 12: QA
 
-- 負荷状況を確認したい
+1. 負荷状況を確認したい
 
 dstatコマンドなどで確認してみましょう。
 
@@ -122,7 +122,7 @@ dstatコマンドなどで確認してみましょう。
 # dstat -cdn --top-cpu
 ````
 
-- 高負荷でOpenStackホストが落ちる
+2. 高負荷でOpenStackホストが落ちる
 
 例えばこう設定して、様子を見てみる。
 
@@ -138,3 +138,27 @@ dstatコマンドなどで確認してみましょう。
 ````
 
 詳細は<http://mikio.github.io/article/2013/03/02_.html>を参照。
+
+3. インスタンスで外部ネットワークにアクセスしようとすると応答がなくなったり切断される
+
+RDO Packstack Icehouse版アンサーファイルのデフォルトはvxlanモードに設定されており、このままインストールするとMTU溢れの問題が発生します。
+以下が参考になります。
+<http://www.cisco.com/cisco/web/support/JP/docs/SW/DCSWT/Nex1000VSWT/CG/026/b_VXLAN_Configuration_4_2_1SV_2_1_1_chapter_010.html?bid=0900e4b182e40102>
+
+CirrOSなどパスワード認証できるイメージから起動して、インスタンスでファイルのコピーを実行してみてください。
+一度目はダウンロードが行えず、二回目のwgetで正常にダウンロードできればこの問題にあたっている可能性があります。
+
+````
+$ wget hogehoge
+$ sudo ifconfig eth0 mtu 1450
+$ wget hogehoge
+````
+
+インスタンスの起動のさいに対処する方法として、カスタマイズスクリプトでcloud-configを書く方法があります。
+この方法はLinuxインスタンスでのみ有効です。もしくはインスタンス起動後に/etc/rc.localに直接記述してもよいです。
+
+````
+#cloud-config
+bootcmd:
+ - echo "ifconfig eth0 mtu 1450" > /etc/rc.local
+````
