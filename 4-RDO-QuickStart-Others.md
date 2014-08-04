@@ -95,10 +95,6 @@ Cirros
 
 ※0.3.1以上のバージョンを利用してください｡
 
-CentOS
-
-<http://repos.fedorapeople.org/repos/openstack/guest-images/>
-
 Fedora
 
 <http://fedoraproject.org/en/get-fedora#clouds>
