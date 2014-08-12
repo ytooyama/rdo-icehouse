@@ -137,6 +137,7 @@ routerはneutron router-listコマンドで確認、サブネットはneutron su
 
 ###◆仮想ルーターが作られたか確認
 neutronコマンドでネットワークを定義したことで仮想ルーター(qrouter)が作られていることを確認します。
+neutron-l3-agentサービスを実行しているノードで確認します。
 
 ````
 # ip netns
