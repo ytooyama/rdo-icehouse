@@ -29,13 +29,10 @@ kvm                   332980  1 kvm_amd
 
 # vi /etc/nova/nova.conf
 （略）
-scheduler_default_filters=AllHostsFilter
-（略）
 virt_type=kvm
 #virt_type=qemu
 （設定を変更）
 
-# service openstack-nova-scheduler restart
 # service openstack-nova-compute restart
 ````
 
