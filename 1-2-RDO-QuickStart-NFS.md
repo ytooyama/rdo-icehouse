@@ -99,7 +99,7 @@ Neutron環境の構築にはSELinuxの設定変更が必要なので設定完了
 以下のようにコマンドを実行します｡
 
 ````
-# yum install -y openstack-packstack python-netaddr libguestfs-tools
+# yum install -y openstack-packstack python-netaddr
 ````
 
 
