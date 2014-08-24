@@ -1,6 +1,6 @@
 #RDO Neutron Quickstart Plus 単体構成編
 
-最終更新日: 2014/8/3
+最終更新日: 2014/8/24
 
 ##この文書について
 この文書はとりあえず1台に全部入りのOpenStack Icehouse環境をさくっと構築する場合の手順を説明しています。
@@ -174,7 +174,8 @@ CONFIG_NEUTRON_OVS_TENANT_NETWORK_TYPE=local
 
 ##Step 7: ネットワーク設定の変更
 
-次に外部と通信できるようにするための設定を行います。
+次に外部と通信できるようにするための設定を行います。外部ネットワークとの接続を提供するノード(通称ネットワークノード)に
+仮想ネットワークブリッジインターフェイスであるbr-exを設定します。
 http://openstack.redhat.com/Neutron_with_existing_external_network
 
 ###◆public用として使うNICの設定を確認
