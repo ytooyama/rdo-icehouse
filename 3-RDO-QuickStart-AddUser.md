@@ -1,6 +1,6 @@
 #RDO Neutron Quickstart Plus ユーザーの追加
 
-最終更新日: 2014/7/29
+最終更新日: 2014/9/11
 
 ##この文書について
 この文書はとりあえず1台に全部入りのOpenStack Icehouse環境をさくっと構築する場合の手順を説明しています。
@@ -62,8 +62,9 @@ demoユーザーを作成してみます。パスワードはdemoにします。
 パラメータはいくつかあるので--helpで確認。--nameがユーザー名、--passがパスワード、--tenantはテナント(Horizonではプロジェクト)名、--enabledは有効化の可否を指定します｡
 
 tenantはHorizonで登録されている「プロジェクト」を確認するか、コマンドではkerstone tenant-listで確認できます。
+roleはkeystone role-listコマンドで確認できます。
 
-作成したdemoユーザーにMember権限を割り当てるには次のように行います。
+例えば作成したdemoユーザーにMemberロール（権限）を割り当てるには次のように行います。
 
 ````
 # keystone user-role-add --user demo --tenant demo --role Member
