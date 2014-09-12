@@ -269,7 +269,7 @@ NM_CONTROLLED=no
 
 ```
 # systemctl disable NetworkManager
-# chkconfig enable network
+# systemctl enable network
 ```
 
 ここまでできたらいったんホストを再起動します。
