@@ -1,7 +1,7 @@
 #RDO Neutron Quickstart Plus Novaの設定変更とインスタンスイメージの登録
 
-最終更新日: 2014/9/9
-..81
+最終更新日: 2014/9/17
+
 
 ##この文書について
 この文書はとりあえず1台に全部入りのOpenStack Icehouse環境をさくっと構築する場合の手順を説明しています。
@@ -109,7 +109,7 @@ Ubuntu
 CentOS 6.xのKernelは2.6.32と古いので、Nested KVMは動きません。
 つまり、Linux KVM(L-0)上にOpenStack環境を構築して、ComputeでKVM(L-1)を動かすことができません。
 
-Nested KVMを利用するにはより新しいLinuxでNested KVM環境を構築するか、次の手順のようにXen向けのカーネルを流用してください。
+Nested KVMを利用するにはより新しいLinuxでNested KVM環境を構築するか、次の手順のようにXen向けのカーネルを流用して構築してください。
 
 <http://wiki.centos.org/HowTos/NestedVirt>
 
