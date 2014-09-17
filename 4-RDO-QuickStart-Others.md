@@ -106,10 +106,10 @@ Ubuntu
 - (Cinderを構築したのであれば)ボリューム作成とインスタンスへの割り当て
 
 ##Step 12: CentOS 6.xでNested KVM
-CentOS 6.xのKernelは2.6.32と古いので、Nested KVMは動きません。
-つまり、Linux KVM(L-0)上にOpenStack環境を構築して、ComputeでKVM(L-1)を動かすことができません。
+CentOS 6.xのKernelは2.6.32と古いので、Nested KVMは動きません(正確に言うと、L-1でKVMモジュールを読み込めません)。
+つまり、Linux KVM(L-0)上の仮想マシンでOpenStack環境を構築して、Computeノードで入れ子のKVM(L-1)を動かすことができません。
 
-Nested KVMを利用するにはより新しいLinuxでNested KVM環境を構築するか、次の手順のようにXen向けのカーネルを流用して構築してください。
+Nested KVMを利用するには、より新しいLinuxでNested KVM環境を構築するか、次の手順のようにXen向けのカーネルを流用して構築してください。
 
 <http://wiki.centos.org/HowTos/NestedVirt>
 
