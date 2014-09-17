@@ -105,8 +105,42 @@ Ubuntu
 - ホストにSSHアクセスしてそこからインスタンスにアクセス
 - (Cinderを構築したのであれば)ボリューム作成とインスタンスへの割り当て
 
+##Step 12: CentOS 6.xでNested KVM
+CentOS 6.xのKernelは2.6.32と古いので、Nested KVMは動きません。
+つまり、Linux KVM(L-0)上にOpenStack環境を構築して、ComputeでKVM(L-1)を動かすことができません。
 
-##Step 12: QA
+Nested KVMを利用するにはより新しいLinuxでNested KVM環境を構築するか、次の手順のようにXen向けのカーネルを流用してください。
+
+<http://wiki.centos.org/HowTos/NestedVirt>
+
+ただし、上記手順のリポジトリー上のカーネルパッケージは古いので、次のようなリポジトリーファイルを作ってください。
+このリポジトリーはenabled=1に絶対に設定しないでください。そう設定してyum updateしてしまうと再起動後、起動しなくなります。
+
+````
+[xen‒c6]
+name=CentOS-$releasever - Xen
+baseurl=http://isoredirect.centos.org/centos/6/xen4/$basearch/
+gpgcheck=0
+enabled=0
+Priority=1
+````
+
+新しいカーネルは次のようにインストールします。
+
+````
+# yum --enablerepo xen-c6 install kernel kernel-firmware
+````
+
+アップデートする場合は次のように実行してください。
+
+````
+# yum --enablerepo xen-c6 update kernel kernel-firmware
+````
+
+Nested KVMのL-0ホストはFedora 20,Ubuntu Server 14.04.1,CentOS 7などをオススメします。
+
+
+##Step 13: QA
 
 ### 負荷状況を確認したい
 
