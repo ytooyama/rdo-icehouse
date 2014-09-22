@@ -1,6 +1,6 @@
 #RDO Neutron Quickstart Plus Novaの設定変更とインスタンスイメージの登録
 
-最終更新日: 2014/9/17
+最終更新日: 2014/9/22
 
 
 ##この文書について
@@ -17,8 +17,7 @@ RDO Neutron Quickstart
 
 デフォルト設定のままインストールした場合、Novaは仮想化基盤にqemuを利用するようになっています。パフォーマンスを上げるには以下のように設定を変更します。
 
-KVMモジュールが読み込まれていることを確認します。
-またスケジューラーの設定も行っておきます。
+事前にKVMモジュールが読み込まれていることを確認します。
 
 ````
 # lsmod | grep kvm
@@ -46,17 +45,17 @@ OpenStack環境でインスタンスを実行するため、イメージの登�
 CirrOSをダウンロードしてOpenStackに登録するには、次のように行います。
 
 ````
-# curl -OL http://download.cirros-cloud.net/0.3.2/cirros-0.3.2-x86_64-disk.img
+# curl -OL http://download.cirros-cloud.net/0.3.3/cirros-0.3.3-x86_64-disk.img
 
-# glance image-create --name="CirrOS 0.3.2" --disk-format=qcow2 \
+# glance image-create --name="CirrOS 0.3.3" --disk-format=qcow2 \
 --container-format=bare --is-public=true \
-< cirros-0.3.2-x86_64-disk.img
+< cirros-0.3.3-x86_64-disk.img
 +------------------+--------------------------------------+
 | Property         | Value                                |
 +------------------+--------------------------------------+
 | checksum         | 64d7c1cd2b6f60c92c14662941cb7913     |
 | container_format | bare                                 |
-| created_at       | 2014-03-31T02:08:50                  |
+| created_at       | 2014-09-22T02:08:50                  |
 | deleted          | False                                |
 | deleted_at       | None                                 |
 | disk_format      | qcow2                                |
@@ -64,12 +63,12 @@ CirrOSをダウンロードしてOpenStackに登録するには、次のよう�
 | is_public        | True                                 |
 | min_disk         | 0                                    |
 | min_ram          | 0                                    |
-| name             | CirrOS 0.3.2                         |
+| name             | CirrOS 0.3.3                         |
 | owner            | 67962937e5f843d0985d23c01a644011     |
 | protected        | False                                |
 | size             | 13167616                             |
 | status           | active                               |
-| updated_at       | 2014-03-31T02:08:50                  |
+| updated_at       | 2014-09-22T02:08:50                  |
 +------------------+--------------------------------------+
 ````
 
