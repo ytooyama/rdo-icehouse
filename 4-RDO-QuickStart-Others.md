@@ -121,7 +121,7 @@ name=CentOS-$releasever - Xen
 baseurl=http://isoredirect.centos.org/centos/6/xen4/$basearch/
 gpgcheck=0
 enabled=0
-Priority=1
+priority=1
 ````
 
 新しいカーネルは次のようにインストールします。
