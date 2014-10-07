@@ -25,7 +25,8 @@ Hardware:
 - 最低1つのNIC
 ※All-in-oneの構成を作る場合は、Privateネットワーク用はloインターフェイスを利用できます。
 
-- ネットワーク
+- OpenStack ネットワーク
+
 本書では次のネットワーク構成を利用します。
 
 Private Network | Public Network
