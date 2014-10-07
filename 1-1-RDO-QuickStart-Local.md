@@ -1,6 +1,6 @@
 #RDO Neutron Quickstart Plus 単体構成編
 
-最終更新日: 2014/8/24
+最終更新日: 2014/10/7
 
 ##この文書について
 この文書はとりあえず1台に全部入りのOpenStack Icehouse環境をさくっと構築する場合の手順を説明しています。
@@ -127,7 +127,7 @@ CONFIG_NOVA_COMPUTE_HOSTS=192.168.1.10,192.168.1.11
 
 - NICを利用したいものに変更する
 
-（例）eth1がゲートウェイに接続されている場合
+（例）eth1がゲートウェイに接続されている場合(All-in-one時のみ可)
 
 CONFIG_NOVA_COMPUTE_PRIVIF=lo
 
@@ -153,7 +153,7 @@ CONFIG_KEYSTONE_ADMIN_PW=admin
 
 CONFIG_PROVISION_DEMO=n
 
-- 単体構成なので、ローカルモードで実行する設定を行う
+- 単体構成にする場合はローカルモードで実行する設定を行う。複数ノードの場合はgre,vxlan,vlanなど
 
 CONFIG_NEUTRON_ML2_TYPE_DRIVERS=local
 
