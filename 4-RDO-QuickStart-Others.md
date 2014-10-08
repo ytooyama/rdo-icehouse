@@ -1,6 +1,6 @@
 #RDO Neutron Quickstart Plus Novaの設定変更とインスタンスイメージの登録
 
-最終更新日: 2014/9/23
+最終更新日: 2014/10/8
 
 
 ##この文書について
@@ -183,6 +183,25 @@ ssh_pwauth: True
 ````
 
 上記例はパスワードを"vmpass"にする例です。最低この4行があれば実現できます。
+
+### アップデートしてインスタンスを起動したい
+
+カスタマイズ・スクリプトでcloud-configに次のように「package_upgrade: True」を定義することで可能です。
+
+````
+#cloud-config
+package_upgrade: True
+````
+
+### 日本時間(JST)に設定してインスタンスを起動したい
+
+ログの日付が見づらくなるので日本時間(JST)に設定したいと思うかもしれません。カスタマイズ・スクリプトでcloud-configに次のようにrunコマンドで実行したいコマンドを定義することで可能です。
+
+````
+#cloud-config
+runcmd:
+ - [cp, /usr/share/zoneinfo/Asia/Tokyo, /etc/localtime]
+````
 
 ### インスタンスで外部ネットワークにアクセスしようとすると応答がなくなったり切断される
 
