@@ -1,6 +1,6 @@
 #RDO Neutron Quickstart Plus Novaの設定変更とインスタンスイメージの登録
 
-最終更新日: 2014/10/8
+最終更新日: 2014/12/17
 
 
 ##この文書について
@@ -252,3 +252,20 @@ dhcp-option=26,1450
 # service dnsmasq restart
 # service neutron-dhcp-agent restart
 ````
+
+###日本語キーボードを使いたい
+nova-computeの/etc/nova/nova.confに以下のように記述
+
+````
+# Keymap for VNC (string value)
+#vnc_keymap=en-us
+vnc_keymap=ja
+````
+
+Computeサービスを再起動します。
+
+````
+# service openstack-nova-compute restart
+````
+
+次回起動したインスタンスから日本語キーボードが使えるようになります。ただし、日本語キーマップで使えるかどうかはOS次第です。
