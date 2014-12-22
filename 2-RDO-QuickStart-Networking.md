@@ -1,18 +1,11 @@
 #RDO Neutron Quickstart Plus ネットワークの設定
 
-最終更新日: 2014/7/29
+最終更新日: 2014/12/22
 
 ##この文書について
-この文書はとりあえず1台に全部入りのOpenStack Icehouse環境をさくっと構築する場合の手順を説明しています。
+この文書は構築したOpenStack環境にNeutronネットワークを作成する手順と作成したネットワークの確認方法の一例を説明しています。
 
-この文書は以下の公開資料を元にしています。
-
-RDO Neutron Quickstart
-
-<http://openstack.redhat.com/Neutron-Quickstart>
-<http://openstack.redhat.com/Neutron_with_existing_external_network>
-
-##Step8: ネットワークの追加
+##Step 1: ネットワークの追加
 br-exにeth1を割り当てて、仮想マシンをハイパーバイザー外部と通信できるようにする為の経路が確保されていることを確認します。
 
 ````
@@ -74,6 +67,7 @@ OpenStackの環境構成をコマンドで実行する場合は、/root/keystone
 ````
 
 - パブリックネットワークの作成
+
 本例ではtenant-idはadminのものを指定します｡
 
 ````
@@ -135,9 +129,8 @@ Added interface xxxx-xxxx-xxxx-xxxx-xxxx to router router1.
 routerはneutron router-listコマンドで確認、サブネットはneutron subnet-listコマンドで確認することができます。
 
 
-###◆仮想ルーターが作られたか確認
-neutronコマンドでネットワークを定義したことで仮想ルーター(qrouter)が作られていることを確認します。
-neutron-l3-agentサービスを実行しているノードで確認します。
+##Step 2: 仮想ルーターが作られたか確認
+neutronコマンドでネットワークを定義したことで仮想ルーター(qrouter)が作られていることを確認します。neutron-l3-agentサービスを実行しているノードで確認します。
 
 ````
 # ip netns
