@@ -15,4 +15,4 @@ Icehouseについてはもうこれ以上更新しません。
 
 ###RDOってなに？
 
-[公式サイト](http://jp-redhat.com/openstack/rdo/)をご覧ください。
+[公式サイト](https://www.rdoproject.org/Main_Page)をご覧ください。
